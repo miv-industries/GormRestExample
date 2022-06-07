@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/miv-industries/GormRestExample/database"
 	"github.com/miv-industries/GormRestExample/models"
@@ -28,6 +30,47 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	database.Database.Db.Create(&user)
+	responseUser := CreateResponseUser(user)
+
+	return c.Status(200).JSON(responseUser)
+}
+
+func GetUsers(c *fiber.Ctx) error {
+	users := []models.User{}
+
+	database.Database.Db.Find(&users)
+	// in this case User is our serializer
+	responseUsers := []User{}
+	for _, user := range users {
+		responseUser := CreateResponseUser(user)
+		responseUsers = append(responseUsers, responseUser)
+	}
+
+	return c.Status(200).JSON(responseUsers)
+}
+
+func findUser(id int, user *models.User) error {
+	database.Database.Db.Find(&user, "id = ?", id)
+	if user.ID == 0 {
+		return errors.New("User does not exist")
+	}
+	return nil
+}
+
+func GetUser(c *fiber.Ctx) error {
+	//this takes an int from path params and puts it in id or returns error
+	id, err := c.ParamsInt("id")
+
+	var user models.User
+
+	if err != nil {
+		return c.Status(400).JSON("Please ensure that :id is an integer")
+	}
+	// we will filter for this user which is a pointer to an user
+	if err := findUser(id, &user); err != nil {
+		c.Status(400).JSON(err.Error())
+	}
+
 	responseUser := CreateResponseUser(user)
 
 	return c.Status(200).JSON(responseUser)

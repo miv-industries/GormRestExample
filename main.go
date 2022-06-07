@@ -12,12 +12,14 @@ func welcome(c *fiber.Ctx) error {
 	return c.SendString("Welcome to my awesome API")
 }
 
-func setuproutes(app *fiber.App) {
+func setupRoutes(app *fiber.App) {
 	// welcome endpoint
 	app.Get("/api", welcome)
 
 	// User endpoints
 	app.Post("api/users", routes.CreateUser)
+	app.Get("api/users", routes.GetUsers)
+	app.Get("api/users/:id", routes.GetUser)
 
 }
 
@@ -25,8 +27,7 @@ func main() {
 	database.ConnectDb()
 	app := fiber.New()
 
-	app.Get("/api", welcome)
-
+	setupRoutes(app)
 	log.Fatal(app.Listen(":3000"))
 
 }
