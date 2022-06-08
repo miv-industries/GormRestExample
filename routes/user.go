@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/miv-industries/GormRestExample/database"
@@ -68,10 +69,44 @@ func GetUser(c *fiber.Ctx) error {
 	}
 	// we will filter for this user which is a pointer to an user
 	if err := findUser(id, &user); err != nil {
-		c.Status(400).JSON(err.Error())
+		fmt.Println("errror bruv wtf")
+		return c.Status(400).JSON(err.Error())
 	}
 
 	responseUser := CreateResponseUser(user)
 
+	return c.Status(200).JSON(responseUser)
+}
+
+func UpdateUser(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+
+	var user models.User
+
+	if err != nil {
+		return c.Status(400).JSON("Please ensure that :id is an integer")
+	}
+	// we will filter for this user which is a pointer to an user
+	if err := findUser(id, &user); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	type UpdateUser struct {
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+	}
+
+	var updateData UpdateUser
+
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(500).JSON(err.Error())
+	}
+	fmt.Println(updateData)
+	user.FirstName = updateData.FirstName
+	user.LastName = updateData.LastName
+
+	database.Database.Db.Save(&user)
+
+	responseUser := CreateResponseUser(user)
 	return c.Status(200).JSON(responseUser)
 }
