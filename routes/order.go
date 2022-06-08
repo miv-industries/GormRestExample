@@ -25,7 +25,7 @@ import (
 type Order struct {
 	ID        uint      `json:"id"`
 	User      User      `json:"user"`
-	Product   Product   `json:product`
+	Product   Product   `json:"product"`
 	CreatedAt time.Time `json:"order_date"`
 }
 
