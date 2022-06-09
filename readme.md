@@ -14,7 +14,6 @@ Roadmap
   - [ ] Translations maybe?
   - [ ] Implement some authentication
   - [ ] Secure some endpoints
-  
-
+  - [ ] Maybe slap a random middleware on it just cuz
 
 
