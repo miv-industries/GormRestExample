@@ -36,7 +36,8 @@ func CreateUser(c *fiber.Ctx) error {
 	var user models.User
 
 	// here we could do validation n stuff if we wanted
-
+	if validators.validateUser(c, &user) {
+	}
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -45,6 +46,10 @@ func CreateUser(c *fiber.Ctx) error {
 	responseUser := CreateResponseUser(user)
 
 	return c.Status(200).JSON(responseUser)
+}
+
+func validateUser(c *fiber.Ctx, user *models.User) {
+	panic("unimplemented")
 }
 
 func GetUsers(c *fiber.Ctx) error {
