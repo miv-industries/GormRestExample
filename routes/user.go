@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miv-industries/GormRestExample/database"
 	"github.com/miv-industries/GormRestExample/models"
+	"github.com/miv-industries/GormRestExample/validators"
 )
 
 // Helpers
@@ -35,21 +36,19 @@ func CreateUser(c *fiber.Ctx) error {
 
 	var user models.User
 
-	// here we could do validation n stuff if we wanted
-	if validators.validateUser(c, &user) {
-	}
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
+	}
+
+	// field validations because a human will input data here
+	if validation_errors := validators.ValidateUser(user); validation_errors != nil {
+		return c.Status(400).JSON(validation_errors)
 	}
 
 	database.Database.Db.Create(&user)
 	responseUser := CreateResponseUser(user)
 
 	return c.Status(200).JSON(responseUser)
-}
-
-func validateUser(c *fiber.Ctx, user *models.User) {
-	panic("unimplemented")
 }
 
 func GetUsers(c *fiber.Ctx) error {
@@ -111,6 +110,11 @@ func UpdateUser(c *fiber.Ctx) error {
 	fmt.Println(updateData)
 	user.FirstName = updateData.FirstName
 	user.LastName = updateData.LastName
+
+	// field validations because a human will input data here
+	if validation_errors := validators.ValidateUser(user); validation_errors != nil {
+		return c.Status(400).JSON(validation_errors)
+	}
 
 	database.Database.Db.Save(&user)
 

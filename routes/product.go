@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miv-industries/GormRestExample/database"
 	"github.com/miv-industries/GormRestExample/models"
+	"github.com/miv-industries/GormRestExample/validators"
 )
 
 // this is just what we use for serializing the user
@@ -38,6 +39,11 @@ func CreateProduct(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
+	}
+
+	// field validations because a human will input data here
+	if validation_errors := validators.ValidateProduct(product); validation_errors != nil {
+		return c.Status(400).JSON(validation_errors)
 	}
 
 	database.Database.Db.Create(&product)
@@ -105,6 +111,10 @@ func UpdateProduct(c *fiber.Ctx) error {
 	product.Name = updateData.Name
 	product.SerialNumber = updateData.SerialNumber
 
+	// field validations because a human will input data here
+	if validation_errors := validators.ValidateProduct(product); validation_errors != nil {
+		return c.Status(400).JSON(validation_errors)
+	}
 	database.Database.Db.Save(&product)
 
 	responseProduct := CreateResponseProduct(product)

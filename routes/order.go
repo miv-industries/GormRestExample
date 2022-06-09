@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miv-industries/GormRestExample/database"
 	"github.com/miv-industries/GormRestExample/models"
+	"github.com/miv-industries/GormRestExample/validators"
 )
 
 /*Example Order {
@@ -59,6 +60,11 @@ func CreateOrder(c *fiber.Ctx) error {
 	var product models.Product
 	if err := findProduct(order.ProductRefer, &product); err != nil {
 		return c.Status(400).JSON(err.Error())
+	}
+
+	// field validations because a human will input data here
+	if validation_errors := validators.ValidateProduct(product); validation_errors != nil {
+		return c.Status(400).JSON(validation_errors)
 	}
 
 	// we now create the order in our database
