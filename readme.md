@@ -5,7 +5,9 @@
   - Run ```alias air='$(go env GOPATH)/bin/air'```
   - You can now run ```air``` in the project directory to start the hot-reload server. It will rebuild on change
   - You should pop the postman collection I gave you right in so you don't have to worry about writing requests
-  Roadmap
+
+
+Roadmap
   - [x] Implemented basic 3 CRUD (s) for user, product
   - [x] Implemented field validation via default tags
   - [ ] Attempt to write a costum validation tag for order for example
