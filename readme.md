@@ -8,7 +8,7 @@
 
 
 Roadmap
-  - [x] Implemented basic 3 CRUD (s) for user, product
+  - [x] Implemented basic 3 CRUD (s) for user, product and order
   - [x] Implemented field validation via default tags
   - [ ] Attempt to write a costum validation tag for order for example
   - [ ] Translations maybe?
